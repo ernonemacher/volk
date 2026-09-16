@@ -37,5 +37,5 @@
     "reason.seed": "seed 地图版本，或 SquadCalc 无法识别",
     "panel.routes": "剩余路线",
     "warn.notAllowed": "你没有可操作此面板的身份组。",
-    "warn.noPanel": "此服务器尚无面板。管理员可用 /squadcalc setup 创建。"
+    "warn.noPanel": "此服务器尚无面板。管理员可用 /volk setup 创建。"
 }

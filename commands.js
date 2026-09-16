@@ -16,8 +16,8 @@ import { AUTO_MAX, AUTO_MIN, fetchServerState, listServers } from "./servers.js"
 import { guildConfig, readDiscovery, saveDiscovery, saveGuild } from "./store.js";
 
 export const COMMAND = new SlashCommandBuilder()
-    .setName("squadcalc")
-    .setDescription("Administer the SquadCalc panel")
+    .setName("volk")
+    .setDescription("Administer the Volk panel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((s) =>
@@ -161,7 +161,7 @@ export async function handleCommand(i, repaint) {
     if (!isAdmin(i, cfg)) {
         return i.reply(
             ephemeral(
-                "You need **Manage Server**, or a role allowed in `/squadcalc roles`.",
+                "You need **Manage Server**, or a role allowed in `/volk roles`.",
             ),
         );
     }
@@ -239,7 +239,7 @@ export async function handleCommand(i, repaint) {
         const discovery = await readDiscovery();
         const auto = cfg.auto ?? {};
         const lines = [
-            `**Channel:** ${cfg.channelId ? `<#${cfg.channelId}>` : "_not set, run `/squadcalc setup`_"}`,
+            `**Channel:** ${cfg.channelId ? `<#${cfg.channelId}>` : "_not set, run `/volk setup`_"}`,
             `**Auto refresh:** ${auto.active ? `on, every ${auto.intervalSeconds ?? 60}s` : "off (button only)"}`,
             `**Language:** ${cfg.language ?? "en"}`,
             `**Discovery:** ${discovery.active ? "on" : "off"}  ·  min ${discovery.minPlayers ?? 50} players  ·  up to ${discovery.count ?? 8} servers`,
@@ -318,7 +318,7 @@ export async function handleCommand(i, repaint) {
         if (!state.found) {
             return i.editReply(
                 `No server \`${id}\` in the SquadCalc API. ` +
-                    "Check the id, or look it up with `/squadcalc search`.",
+                    "Check the id, or look it up with `/volk search`.",
             );
         }
 
@@ -367,7 +367,7 @@ export async function handleCommand(i, repaint) {
             return `\`${s.id}\`  ${a.players}/${a.maxPlayers}  ${state}\n   ${a.name.slice(0, 60)}`;
         });
         return i.editReply(
-            [`**${found.length} result(s):**`, ...lines, "", "Pin one with `/squadcalc pin id:<id>`"]
+            [`**${found.length} result(s):**`, ...lines, "", "Pin one with `/volk pin id:<id>`"]
                 .join("\n")
                 .slice(0, 1900),
         );

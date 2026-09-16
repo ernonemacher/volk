@@ -140,7 +140,7 @@ async function refresh(panel) {
                 await buildComponents(panel, null, t, {}, config).catch(() => []),
             );
         } catch {
-            // The channel itself is gone; /squadcalc setup rebinds it.
+            // The channel itself is gone; /volk setup rebinds it.
         }
     } finally {
         panel.rendering = false;
@@ -206,7 +206,7 @@ async function adoptMessages(panel, channel) {
 
 /**
  * Binds a guild's panel to its configured channel, adopting whatever is already
- * there. Returns null when the guild has not run /squadcalc setup.
+ * there. Returns null when the guild has not run /volk setup.
  */
 async function mount(guildId) {
     const config = await guildConfig(guildId);
@@ -320,7 +320,7 @@ client.once("clientReady", async () => {
         }
 
         if (!(await mount(guildId))) {
-            console.log(`[BOT] guild ${guildId}: no channel bound, waiting for /squadcalc setup`);
+            console.log(`[BOT] guild ${guildId}: no channel bound, waiting for /volk setup`);
         }
     }
 });
@@ -342,7 +342,7 @@ client.on("guildDelete", (guild) => {
 client.on("interactionCreate", async (i) => {
     if (!i.guildId) return;
 
-    if (i.isChatInputCommand() && i.commandName === "squadcalc") {
+    if (i.isChatInputCommand() && i.commandName === "volk") {
         try {
             return await handleCommand(i, repaint);
         } catch (e) {

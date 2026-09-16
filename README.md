@@ -44,7 +44,7 @@ Invite the bot with the `bot` and `applications.commands` scopes, then in each
 server:
 
 ```
-/squadcalc setup            # bind the channel the panel lives in
+/volk setup            # bind the channel the panel lives in
 ```
 
 The panel publishes two messages and edits them in place: the text panel with
@@ -57,15 +57,15 @@ panel channel.
 
 | Command | What it does |
 |---|---|
-| `/squadcalc setup` | Choose the channel the panel is published in |
-| `/squadcalc config` | Show the current settings and the server list |
-| `/squadcalc roles` | Choose which roles configure the bot, and which operate the panel |
-| `/squadcalc auto` | Automatic refresh, on/off and interval (30 to 3600s) |
-| `/squadcalc language` | Panel language (de, en, fr, pt, ru, uk, zh) |
-| `/squadcalc pin` / `unpin` | Pin a server so it is listed even while offline |
-| `/squadcalc discovery` | Include servers currently in a match, and how many |
-| `/squadcalc search` | Find a server id by name |
-| `/squadcalc republish` | Post the panel again, for when it is wedged or deleted |
+| `/volk setup` | Choose the channel the panel is published in |
+| `/volk config` | Show the current settings and the server list |
+| `/volk roles` | Choose which roles configure the bot, and which operate the panel |
+| `/volk auto` | Automatic refresh, on/off and interval (30 to 3600s) |
+| `/volk language` | Panel language (de, en, fr, pt, ru, uk, zh) |
+| `/volk pin` / `unpin` | Pin a server so it is listed even while offline |
+| `/volk discovery` | Include servers currently in a match, and how many |
+| `/volk search` | Find a server id by name |
+| `/volk republish` | Post the panel again, for when it is wedged or deleted |
 
 ## Permissions
 
@@ -78,7 +78,7 @@ Two levels, because they answer different questions:
 
 Operating is open on purpose. A squad calling objectives mid-match should not be
 waiting on someone with Manage Server, so the restriction only exists once an
-admin names at least one operator role with `/squadcalc roles`. Manage Server
+admin names at least one operator role with `/volk roles`. Manage Server
 always counts as admin, so a fresh install works before anything is configured.
 
 ## Configuration

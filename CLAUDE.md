@@ -33,7 +33,7 @@ layer.js     /api/get/layer                  -> lane graph, projector, gamemode 
 render-map.js  basemap + SVG overlay         -> JPEG buffer
 panel.js     panel state                     -> embed + components
 bot.js       Discord client                  -> orchestrates the above
-commands.js  /squadcalc slash command        -> admin config, writes config.json
+commands.js  /volk slash command        -> admin config, writes config.json
 i18n.js      locales/                        -> translator(lng)
 ```
 
@@ -70,7 +70,7 @@ Gamemode, not data shape, decides behaviour. Invasion stores its links under `cl
 
 ## Configuration
 
-`config.json` is written at runtime by `/squadcalc` and cached in memory by `servers.js` (`configCache`). Always go through `readConfig`/`writeConfig`; never write the file directly.
+`config.json` is written at runtime by `/volk` and cached in memory by `servers.js` (`configCache`). Always go through `guildConfig`/`saveGuild`; never write the file directly.
 
 Server list is two sources merged: **pinned** ids (always shown, even offline or seeding) and **discovery** (in-match servers from the API, above a player threshold). Auto-refresh defaults to 60s, clamped to `AUTO_MIN`/`AUTO_MAX` (30–3600).
 
