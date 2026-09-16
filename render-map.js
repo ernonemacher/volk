@@ -483,7 +483,7 @@ export async function renderLayer(layerName, picked = [], options = {}) {
             const size = flag.steps.length === 1 ? 26 : flag.steps.length === 2 ? 18 : 13;
             map.push(label(x, y + size / 3, text, size));
         }
-        map.push(label(x, y - 29, flag.name, 21));
+        map.push(label(x, y - 26, flag.name, 17));
 
         // Every point still in play carries its odds, not only the next ones:
         // the solver resolves the whole board at once.
