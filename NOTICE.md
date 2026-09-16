@@ -1,6 +1,6 @@
 # Third-party code
 
-This project is a derivative work of **SquadCalc** by Maxime *"sharkman"*
+Volk is a derivative work of **SquadCalc** by Maxime *"sharkman"*
 Boussard, released under the MIT License (Non-Commercial).
 
 - Original project: https://github.com/sh4rkman/SquadCalc

@@ -1,8 +1,10 @@
-# SquadCalcLive
+# Volk
 
-A Discord bot that keeps a live [Squad](https://joinsquad.com) map panel in a
-channel: the layer a server is playing, which objectives are still possible, and
-how likely each one is.
+**Live Squad objective intel in Discord.**
+
+A bot that keeps a [Squad](https://joinsquad.com) map panel in a channel: the
+layer a server is playing, which objectives are still possible, and how likely
+each one is.
 
 Built on [SquadCalc](https://github.com/sh4rkman/SquadCalc) and derived from its
 code. See [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE): this project inherits

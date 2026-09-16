@@ -1,9 +1,9 @@
 {
-  "name": "squadcalc-live",
+  "name": "volk",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Discord bot that publishes a live SquadCalc map panel in a channel",
+  "description": "Live Squad objective intel in Discord",
   "license": "SEE LICENSE IN LICENSE",
   "engines": { "node": ">=20" },
   "scripts": {
