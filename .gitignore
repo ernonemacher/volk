@@ -1,0 +1,18 @@
+node_modules/
+
+# Secrets
+.env
+
+# Runtime state: guild ids, channel ids, pinned servers
+config.json
+
+# Generated output
+preview-*.jpg
+preview-*.png
+*.log
+
+.DS_Store
+
+# Working notes, kept local: Portuguese product and planning documents
+PRODUCT.md
+BACKLOG.md

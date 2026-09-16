@@ -1,0 +1,11 @@
+{
+    "teams": "Команды",
+    "team1": "Команда 1",
+    "team2": "Команда 2",
+    "players": "Игроки",
+    "faction": "Фракция",
+    "unit": "Подразделение",
+    "currentMap": "Текущая карта",
+    "playTime": "Время на карте",
+    "layerPlaceholder": "Layer"
+}

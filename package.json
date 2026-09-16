@@ -1,0 +1,22 @@
+{
+  "name": "squadcalc-live",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Discord bot that publishes a live SquadCalc map panel in a channel",
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node bot.js",
+    "render": "node render-map.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^17.4.2",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0",
+    "ws": "^8.21.3"
+  }
+}

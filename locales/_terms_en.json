@@ -1,0 +1,11 @@
+{
+    "teams": "Teams",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "players": "Players",
+    "faction": "Faction",
+    "unit": "Unit",
+    "currentMap": "Current Map",
+    "playTime": "Play Time",
+    "layerPlaceholder": "Layer"
+}
