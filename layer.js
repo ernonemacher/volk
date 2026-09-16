@@ -222,6 +222,8 @@ export function laneState(layerData, picked = [], perspective = "team1", layerNa
             walk: [],
             alive: flags.map((f) => ({ ...f, steps: [], depth: 0, percentage: 0, taken: false, next: false })),
             nextFlags: [],
+            routeComplete: false,
+            stepCount: 0,
             lanes: { alive: 0, total: 0 },
         };
     }
@@ -299,9 +301,19 @@ export function laneState(layerData, picked = [], perspective = "team1", layerNa
         ];
     });
 
+    // The chain reaches the enemy main only once a confirmed point is pinned to
+    // the deepest step. "Nothing left to confirm" is not the same thing: a
+    // confirmation made out of order carries no depth, and using it as a proxy
+    // drew a line to the enemy main across objectives nobody had walked.
+    const routeComplete = alive.some(
+        (f) => f.taken && f.steps.length === 1 && f.steps[0] === solver.stepCount,
+    );
+
     return {
         ...base,
         currentPosition: nextStep,
+        routeComplete,
+        stepCount: solver.stepCount,
         walk: confirmed.map((c) => c.key),
         alive,
         nextFlags: alive.filter((f) => f.next && !f.taken),

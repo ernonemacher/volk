@@ -128,45 +128,34 @@ export async function buildComponents(panel, state, t, status = {}, config = {})
     }
 
     // --- flags -----------------------------------------------------------
-    // Any point still in play can be confirmed, not only the next one: the
-    // solver takes confirmations in any order, so learning a deep flag first
-    // is worth as much as learning the first one. Candidates for the next
-    // depth lead the list, the rest follow by how likely they are.
-    if (state?.alive?.length && hasLane(state.gamemode) && !state.linear) {
+    // Only the candidates for the next depth. The solver accepts confirmations
+    // in any order, but a menu holding every remaining objective was unreadable
+    // and let people confirm a deep flag whose depth cannot be pinned yet,
+    // which leaves the chain ambiguous.
+    if (state?.nextFlags?.length && hasLane(state.gamemode) && !state.linear) {
         const layer = await fetchLayer(panel.layerName);
-        const options = state.alive
-            .filter((f) => !f.taken)
-            .sort(
-                (a, b) =>
-                    Number(b.next) - Number(a.next) ||
-                    a.depth - b.depth ||
-                    b.percentage - a.percentage,
-            )
-            .slice(0, MAX_OPTIONS);
-
-        if (options.length) {
-            rows.push(
-                new ActionRowBuilder().addComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId("flag")
-                        .setPlaceholder(t("panel.nextFlag", { n: state.currentPosition }))
-                        .addOptions(
-                            options.map((flag) => ({
-                                label: `${flag.name}`.slice(0, 100),
+        rows.push(
+            new ActionRowBuilder().addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId("flag")
+                    .setPlaceholder(t("panel.nextFlag", { n: state.currentPosition }))
+                    .addOptions(
+                        [...state.nextFlags]
+                            .sort((a, b) => b.percentage - a.percentage)
+                            .slice(0, MAX_OPTIONS)
+                            .map((flag) => ({
+                                label: flag.name.slice(0, 100),
                                 description: [
-                                    `#${flag.steps.join("·")}`,
                                     keypadOf(layer, flag.x, flag.y),
                                     `${Math.round(flag.percentage)}%`,
                                 ]
                                     .filter(Boolean)
-                                    .join(" · ")
-                                    .slice(0, 100),
+                                    .join(" · "),
                                 value: flag.key.slice(0, 100),
                             })),
-                        ),
-                ),
-            );
-        }
+                    ),
+            ),
+        );
     }
 
     // --- buttons ----------------------------------------------------------
@@ -303,5 +292,5 @@ export async function currentState(panel) {
 /** Validates a pick before trusting it: stale interactions can arrive late. */
 export async function canPick(panel, key) {
     const state = await currentState(panel);
-    return Boolean(state?.alive.some((f) => f.key === key && !f.taken));
+    return Boolean(state?.nextFlags.some((f) => f.key === key));
 }

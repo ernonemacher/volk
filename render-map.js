@@ -297,14 +297,14 @@ function walkPath(state, project) {
     if (!points.length) return "";
 
     // The mains bracket the chain: the one the depths count from sits a step
-    // before the first objective, and the far one joins only once the chain
-    // has nothing left to confirm.
+    // before the first objective, and the far one joins only once a confirmed
+    // point sits at the deepest step.
     const main = state.clusters[state.start];
     if (main) points.unshift({ step: 0, at: project(...centreOf(main)) });
 
     const farName = state.start === state.mains.team1 ? state.mains.team2 : state.mains.team1;
     const far = state.clusters[farName];
-    if (far && !state.nextFlags.length) {
+    if (far && state.routeComplete) {
         points.push({ step: points[points.length - 1].step + 1, at: project(...centreOf(far)) });
     }
 
@@ -357,10 +357,10 @@ function gridFrame(step, width, height) {
     if (!Number.isFinite(step) || step < 20) return "";
     const parts = [`<rect x="0" y="0" width="${width + 2 * MARGIN}" height="${height + 2 * MARGIN}" fill="none" stroke="${STYLE.frame}" stroke-width="${2 * MARGIN}"/>`];
     for (let i = 0; (i + 1) * step <= width; i++) {
-        parts.push(label(MARGIN + i * step + step / 2, MARGIN - 16, String.fromCharCode(65 + i), 34));
+        parts.push(label(MARGIN + i * step + step / 2, MARGIN - 14, String.fromCharCode(65 + i), 27));
     }
     for (let i = 0; (i + 1) * step <= height; i++) {
-        parts.push(label(MARGIN / 2, MARGIN + i * step + step / 2 + 12, String(i + 1), 34));
+        parts.push(label(MARGIN / 2, MARGIN + i * step + step / 2 + 10, String(i + 1), 27));
     }
     return parts.join("");
 }
@@ -392,19 +392,19 @@ function mainMarker(x, y, teamId, faction, zone, pxPerMetre, icon) {
         }
     }
 
-    const half = 30;
-    const arm = 16;
+    const half = 24;
+    const arm = 13;
     for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
         const cx = x + sx * half;
         const cy = y + sy * half;
         parts.push(
             `<path d="M ${(cx - sx * arm).toFixed(1)} ${cy.toFixed(1)} L ${cx.toFixed(1)} ${cy.toFixed(1)} ` +
                 `L ${cx.toFixed(1)} ${(cy - sy * arm).toFixed(1)}" fill="none" stroke="${STYLE.mainBracket}" ` +
-                `stroke-width="5" stroke-linecap="square"/>`,
+                `stroke-width="4" stroke-linecap="square"/>`,
         );
     }
 
-    const r = 22;
+    const r = 18;
     if (icon) {
         const clip = `mainclip${teamId}`;
         parts.push(
@@ -413,16 +413,16 @@ function mainMarker(x, y, teamId, faction, zone, pxPerMetre, icon) {
                 `x="${(x - r).toFixed(1)}" y="${(y - r).toFixed(1)}" width="${r * 2}" height="${r * 2}" ` +
                 `clip-path="url(#${clip})"/>` +
                 `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="none" ` +
-                `stroke="${STYLE.mainOutline}" stroke-width="3"/>`,
+                `stroke="${STYLE.mainOutline}" stroke-width="2.5"/>`,
         );
     } else {
         parts.push(
             `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${STYLE.mainFill}" ` +
-                `stroke="${STYLE.mainStroke}" stroke-width="5"/>`,
+                `stroke="${STYLE.mainStroke}" stroke-width="4"/>`,
         );
     }
 
-    parts.push(label(x, y - 44, faction ? `Team ${teamId} : ${faction}` : `Team ${teamId}`, 26));
+    parts.push(label(x, y - 36, faction ? `Team ${teamId} : ${faction}` : `Team ${teamId}`, 21));
     return parts.join("");
 }
 
@@ -470,8 +470,8 @@ export async function renderLayer(layerName, picked = [], options = {}) {
             map.push(capZone(cap, project, pxPerMetre));
         }
         map.push(
-            `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="26" fill="${fill}" ` +
-                `stroke="${stroke}" stroke-width="5"/>`,
+            `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="21" fill="${fill}" ` +
+                `stroke="${stroke}" stroke-width="4"/>`,
         );
 
         // A point the randomiser can place at more than one depth shows them
@@ -480,15 +480,15 @@ export async function renderLayer(layerName, picked = [], options = {}) {
         // walked so far is only readable from the flags themselves.
         if (flag.steps.length) {
             const text = flag.steps.join("·");
-            const size = flag.steps.length === 1 ? 32 : flag.steps.length === 2 ? 22 : 16;
+            const size = flag.steps.length === 1 ? 26 : flag.steps.length === 2 ? 18 : 13;
             map.push(label(x, y + size / 3, text, size));
         }
-        map.push(label(x, y - 36, flag.name, 26));
+        map.push(label(x, y - 29, flag.name, 21));
 
         // Every point still in play carries its odds, not only the next ones:
         // the solver resolves the whole board at once.
         if (!flag.taken && flag.percentage) {
-            map.push(label(x, y + 50, `${Math.round(flag.percentage)}%`, 20));
+            map.push(label(x, y + 40, `${Math.round(flag.percentage)}%`, 16));
         }
     }
 
