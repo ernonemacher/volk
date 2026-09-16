@@ -190,6 +190,21 @@ const publishMap = (panel, channel, image, fallback = "") =>
         files: image ? [new AttachmentBuilder(image, { name: `map-${Date.now()}.jpg` })] : [],
     });
 
+/** Removes a panel's two messages from whatever channel they are in. */
+async function discardMessages(panel) {
+    if (!panel.channelId) return;
+    const channel = await client.channels.fetch(panel.channelId);
+    for (const id of [panel.textMessageId, panel.mapMessageId].filter(Boolean)) {
+        await channel.messages
+            .fetch(id)
+            .then((m) => m.delete())
+            .catch(() => {});
+    }
+    panel.textMessageId = null;
+    panel.mapMessageId = null;
+    panel.lastRenderKey = null;
+}
+
 /**
  * Notices a panel message someone deleted, so it comes back.
  *
@@ -278,7 +293,12 @@ export async function repaint(guildId, { republish = false } = {}) {
 
     // Channel moved, or the guild had no panel yet: mount from scratch.
     if (!panel || panel.channelId !== config.channelId) {
-        if (panel) stopAuto(panel);
+        if (panel) {
+            stopAuto(panel);
+            // Clear the old channel first. A panel left behind keeps showing a
+            // frozen match and reads as the live one.
+            await discardMessages(panel).catch(() => {});
+        }
         panels.delete(guildId);
         return mount(guildId);
     }

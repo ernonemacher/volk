@@ -150,6 +150,32 @@ export async function registerCommands(client, guildId) {
 const ephemeral = (content) => ({ content, flags: MessageFlags.Ephemeral });
 
 /**
+ * What the bot still needs in a channel to run a panel there.
+ *
+ * Read history and manage messages are not optional extras: the panel is two
+ * messages edited in place, which means fetching them every pass and deleting
+ * leftovers on boot.
+ */
+const NEEDED = {
+    ViewChannel: "View Channel",
+    SendMessages: "Send Messages",
+    EmbedLinks: "Embed Links",
+    AttachFiles: "Attach Files",
+    ReadMessageHistory: "Read Message History",
+    ManageMessages: "Manage Messages",
+};
+
+function missingPermissions(i, channel) {
+    const me = i.guild?.members?.me;
+    if (!me) return [];
+    const allowed = channel.permissionsFor(me);
+    if (!allowed) return [];
+    return Object.entries(NEEDED)
+        .filter(([flag]) => !allowed.has(PermissionsBitField.Flags[flag]))
+        .map(([, label]) => label);
+}
+
+/**
  * @param {import("discord.js").ChatInputCommandInteraction} i
  * @param {(guildId: string, opts?: {republish?: boolean}) => Promise<unknown>} repaint
  */
@@ -172,6 +198,19 @@ export async function handleCommand(i, repaint) {
         const channel = i.options.getChannel("channel") ?? i.channel;
         if (!channel?.isTextBased?.()) {
             return i.reply(ephemeral("Pick a text channel."));
+        }
+
+        // Checked before the channel is saved: a channel the bot cannot write
+        // to fails silently at publish time, because the error panel has
+        // nowhere to go either, and setup would still report success.
+        const missing = missingPermissions(i, channel);
+        if (missing.length) {
+            return i.reply(
+                ephemeral(
+                    `I am missing **${missing.join("**, **")}** in <#${channel.id}>. ` +
+                        "Grant those and run the command again.",
+                ),
+            );
         }
 
         cfg.channelId = channel.id;

@@ -47,6 +47,10 @@ server:
 /volk setup            # bind the channel the panel lives in
 ```
 
+The panel channel needs View Channel, Send Messages, Embed Links, Attach Files,
+Read Message History and Manage Messages. Setup refuses a channel missing any of
+them rather than saving one it cannot publish to.
+
 The panel publishes two messages and edits them in place: the text panel with
 the controls, and the map image on its own below.
 
