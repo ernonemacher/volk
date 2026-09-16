@@ -51,9 +51,9 @@ const FLAG_COLOUR = {
 const STYLE = {
     flagFill: "rgba(255,255,255,0.40)",
     flagStroke: "rgb(104,104,104)",
-    nextFill: "rgba(197,0,0,0.90)",
+    nextFill: "rgb(197,0,0)",
     nextStroke: "rgb(143,0,0)",
-    takenFill: "rgba(0,128,0,1)",
+    takenFill: "rgb(0,128,0)",
     takenStroke: "rgb(0,90,0)",
     mainFill: "rgb(197,0,0)",
     mainStroke: "rgb(143,0,0)",
@@ -62,6 +62,7 @@ const STYLE = {
     protection: "rgb(200,40,40)",
     noDeploy: "rgb(230,150,60)",
     capZone: "rgb(255,255,255)",
+    path: "rgb(255,255,255)",
     grid: "rgba(0,0,0,0.45)",
     frame: "#0d0d0d",
     text: "#FFFFFF",
@@ -276,6 +277,55 @@ function unplayableArea(layerData, project, width, height) {
     return `<path d="${d.join(" ")}" fill="#111111" fill-opacity="0.75" fill-rule="evenodd"/>`;
 }
 
+/**
+ * The chain through the confirmed objectives, ported from SquadCalc's
+ * `_drawPath`.
+ *
+ * Only points adjacent in the chain are joined. Knowing step 1 and step 4 says
+ * nothing about the legs between them, so one line across the map would draw a
+ * route nobody confirmed; each run of consecutive steps gets its own line. A
+ * confirmed point whose depth is still open has no place in the chain yet.
+ */
+function walkPath(state, project) {
+    const byKey = new Map(state.alive.map((f) => [f.key, f]));
+    const points = state.walk
+        .map((key) => byKey.get(key))
+        .filter((flag) => flag?.steps.length === 1)
+        .map((flag) => ({ step: flag.steps[0], at: project(flag.x, flag.y) }))
+        .sort((a, b) => a.step - b.step);
+
+    if (!points.length) return "";
+
+    // The mains bracket the chain: the one the depths count from sits a step
+    // before the first objective, and the far one joins only once the chain
+    // has nothing left to confirm.
+    const main = state.clusters[state.start];
+    if (main) points.unshift({ step: 0, at: project(...centreOf(main)) });
+
+    const farName = state.start === state.mains.team1 ? state.mains.team2 : state.mains.team1;
+    const far = state.clusters[farName];
+    if (far && !state.nextFlags.length) {
+        points.push({ step: points[points.length - 1].step + 1, at: project(...centreOf(far)) });
+    }
+
+    const runs = [[points[0]]];
+    for (let i = 1; i < points.length; i++) {
+        if (points[i].step === points[i - 1].step + 1) runs[runs.length - 1].push(points[i]);
+        else runs.push([points[i]]);
+    }
+
+    return runs
+        .filter((run) => run.length > 1)
+        .map(
+            (run) =>
+                `<polyline points="${run
+                    .map(({ at }) => `${at[0].toFixed(1)},${at[1].toFixed(1)}`)
+                    .join(" ")}" fill="none" stroke="${STYLE.path}" stroke-width="4" ` +
+                `stroke-opacity="0.9" stroke-linejoin="round" stroke-linecap="round"/>`,
+        )
+        .join("");
+}
+
 function gridStep(layerData, width) {
     const [c0, c1] = layerData.mapTextureCorners;
     const metres = Math.abs(c1.location_x - c0.location_x) / 100;
@@ -393,7 +443,11 @@ export async function renderLayer(layerName, picked = [], options = {}) {
     const state = laneState(data, picked, perspective, layerName);
 
     const step = gridStep(data, width);
-    const map = [unplayableArea(data, project, width, height), gridLines(step, width, height)];
+    const map = [
+        unplayableArea(data, project, width, height),
+        gridLines(step, width, height),
+        walkPath(state, project),
+    ];
 
     const [tc0, tc1] = data.mapTextureCorners;
     const pxPerMetre = width / (Math.abs(tc1.location_x - tc0.location_x) / 100);
@@ -422,7 +476,9 @@ export async function renderLayer(layerName, picked = [], options = {}) {
 
         // A point the randomiser can place at more than one depth shows them
         // all, as SquadCalc's `multiPos` flags do, so the digits shrink to fit.
-        if (!flag.taken && flag.steps.length) {
+        // Confirmed flags keep their number too: on a static image the order
+        // walked so far is only readable from the flags themselves.
+        if (flag.steps.length) {
             const text = flag.steps.join("·");
             const size = flag.steps.length === 1 ? 32 : flag.steps.length === 2 ? 22 : 16;
             map.push(label(x, y + size / 3, text, size));

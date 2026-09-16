@@ -97,6 +97,8 @@ async function refresh(panel) {
             return;
         }
 
+        await reconcileMessages(panel, channel);
+
         const layerChanged = syncLayer(panel, status.layer);
         const state = await currentState(panel);
 
@@ -151,17 +153,25 @@ async function refresh(panel) {
 // --- message plumbing ------------------------------------------------------
 
 async function editOrCreate(panel, channel, key, payload) {
+    // `attachments: []` means "drop what is already attached", which only makes
+    // sense on an edit. Sent alongside an upload on a fresh message it
+    // contradicts the file and Discord rejects the whole body.
+    const { attachments: _onlyForEdits, ...fresh } = payload;
+
     if (panel[key]) {
         try {
             const message = await channel.messages.fetch(panel[key]);
             await message.edit(payload);
             return;
-        } catch {
-            panel[key] = null; // deleted by someone: recreate below
-            panel.lastRenderKey = null; // force the image back on the next pass
+        } catch (e) {
+            // Deleted by someone, or an edit that referenced an attachment
+            // Discord no longer holds. Either way the id is unusable.
+            console.warn(`[BOT] ${key} unusable, reposting: ${e.message.split("\n")[0]}`);
+            panel[key] = null;
+            panel.lastRenderKey = null; // the image has to go up again
         }
     }
-    const message = await channel.send(payload);
+    const message = await channel.send(fresh);
     panel[key] = message.id;
 }
 
@@ -179,6 +189,38 @@ const publishMap = (panel, channel, image, fallback = "") =>
         attachments: [],
         files: image ? [new AttachmentBuilder(image, { name: `map-${Date.now()}.jpg` })] : [],
     });
+
+/**
+ * Notices a panel message someone deleted, so it comes back.
+ *
+ * Without this the map only reappears when something else changes the render
+ * key: delete it during a quiet match and the panel stays half gone for as long
+ * as the layer holds.
+ */
+async function reconcileMessages(panel, channel) {
+    const alive = async (id) =>
+        Boolean(id) && (await channel.messages.fetch(id).then(() => true, () => false));
+
+    if (!(await alive(panel.textMessageId))) {
+        // Both go, not just the text: a new text message would land *under* the
+        // surviving map and invert the panel.
+        panel.textMessageId = null;
+        if (panel.mapMessageId) {
+            await channel.messages
+                .fetch(panel.mapMessageId)
+                .then((m) => m.delete())
+                .catch(() => {});
+        }
+        panel.mapMessageId = null;
+        panel.lastRenderKey = null;
+        return;
+    }
+
+    if (!(await alive(panel.mapMessageId))) {
+        panel.mapMessageId = null;
+        panel.lastRenderKey = null;
+    }
+}
 
 /**
  * Adopts the bot's own messages on boot and deletes leftovers, so restarting
