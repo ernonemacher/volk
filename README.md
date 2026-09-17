@@ -5,12 +5,13 @@ own repository, pulled in here as a submodule.
 
 | Part | What it does |
 |---|---|
-| [`bot/`](https://github.com/ernonemacher/volk-bot) | Discord bot publishing a live match map, with the lane walked by hand |
-| `web/` | Uniform and vehicle catalogues, for what the map cannot answer — not published yet |
+| [`volk-bot/`](https://github.com/ernonemacher/volk-bot) | Discord bot publishing a live match map, with the lane walked by hand |
+| [`volk-web/`](https://github.com/ernonemacher/volk-web) | Uniform and vehicle catalogues, for what the map cannot answer |
 
-Only `bot/` is wired up as a submodule. `volk-web` exists as a repository but has
-no remote yet, and a submodule pointing at a local path makes `git clone` fail
-outright for everyone else, so it joins here once it is published.
+The folders carry the repository names so a checkout reads the same as GitHub
+does. `volk-web` is private for now: the uniform imagery and the vehicle
+catalogue are other people's extraction work, and the crediting is worth
+settling before any of it is public.
 
 Both run off public sources: the [SquadCalc](https://github.com/sh4rkman/SquadCalc)
 API for layers and servers, snapshots of community catalogues for the rest. See
@@ -24,19 +25,19 @@ Clone with the parts, not just the shell:
 git clone --recurse-submodules git@github.com:ernonemacher/volk.git
 ```
 
-A plain `git clone` leaves `bot/` and `web/` empty. If that happens:
+A plain `git clone` leaves `volk-bot/` and `volk-web/` empty. If that happens:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-Each submodule is an ordinary repository: `cd bot`, branch, commit and push as
+Each submodule is an ordinary repository: `cd volk-bot`, branch, commit and push as
 usual. The catch is that this repository records **which commit** of each part
 it points at, so publishing a change is two steps:
 
 ```bash
-cd bot && git commit && git push      # the change itself
-cd .. && git add bot && git commit    # move the pointer here
+cd volk-bot && git commit && git push      # the change itself
+cd .. && git add volk-bot && git commit    # move the pointer here
 ```
 
 Skip the second and this repository still points at the old commit, which is the

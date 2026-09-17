@@ -1,6 +1,6 @@
-[submodule "bot"]
-	path = bot
+[submodule "volk-bot"]
+	path = volk-bot
 	url = https://github.com/ernonemacher/volk-bot.git
-[submodule "web"]
-	path = web
+[submodule "volk-web"]
+	path = volk-web
 	url = https://github.com/ernonemacher/volk-web.git
