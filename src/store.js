@@ -20,8 +20,9 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const STORE_PATH = process.env.SQUADCALC_STORE ?? join(HERE, "config.json");
+// The repo root, one level up from src/, is where config.json lives.
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const STORE_PATH = process.env.SQUADCALC_STORE ?? join(ROOT, "config.json");
 
 const DEFAULTS = {
     pinned: [

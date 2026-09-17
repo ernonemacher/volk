@@ -18,7 +18,7 @@
  */
 
 import { chromium } from "playwright";
-import { APP_URL, fetchServerState } from "../servers.js";
+import { APP_URL, fetchServerState } from "../src/servers.js";
 
 // A bigger viewport makes Leaflet draw the map into more pixels, pulling more
 // detail from the source image. At deviceScaleFactor 2 this lands near 3000px.

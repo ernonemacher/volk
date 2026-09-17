@@ -17,7 +17,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const DIR = join(dirname(fileURLToPath(import.meta.url)), "locales");
+const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "locales");
 const FALLBACK = "en";
 const TERMS_PREFIX = "_terms_";
 

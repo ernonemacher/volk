@@ -9,7 +9,7 @@ Boussard, released under the MIT License (Non-Commercial).
 SquadCalc's licence carries a non-commercial restriction, which this project
 inherits in full. It may not be sold, bundled into a paid product or service, or
 run on anything that earns revenue from it, donations tied to access or
-functionality included. See [LICENSE](LICENSE).
+functionality included. See [LICENSE](../LICENSE).
 
 ## What is derived, and how
 

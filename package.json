@@ -7,8 +7,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "engines": { "node": ">=20" },
   "scripts": {
-    "start": "node bot.js",
-    "render": "node render-map.js"
+    "start": "node src/bot.js",
+    "render": "node src/render-map.js"
   },
   "dependencies": {
     "discord.js": "^14.27.0",
