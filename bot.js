@@ -357,9 +357,12 @@ client.once("clientReady", async () => {
 
     const guilds = await client.guilds.fetch();
     if (!guilds.size) {
+        // Both scopes, or the install completes without adding the bot to the
+        // guild and its commands never register. 125952 is the six channel
+        // permissions the panel needs; see missingPermissions in commands.js.
         console.error(
-            "Not in any guild. Invite it: https://discord.com/api/oauth2/authorize?client_id=" +
-                `${client.user.id}&permissions=117760&scope=bot%20applications.commands`,
+            "Not in any guild. Invite it: https://discord.com/oauth2/authorize?client_id=" +
+                `${client.user.id}&permissions=125952&scope=bot+applications.commands`,
         );
     }
 

@@ -93,7 +93,14 @@ when the server changes layer, because a new match means a new route.
 
 ## Setting it up
 
-Invite the bot, then in each server:
+Invite the bot with **both** the `bot` and `applications.commands` scopes:
+
+```
+https://discord.com/oauth2/authorize?client_id=<application id>&permissions=125952&scope=bot+applications.commands
+```
+
+Without the `bot` scope the authorisation still reports success, but no bot
+joins the server and no commands appear. Then, in each server:
 
 ```
 /volk setup                     # uses the current channel

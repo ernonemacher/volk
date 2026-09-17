@@ -43,8 +43,9 @@ cp .env.example .env     # add your bot token
 npm start
 ```
 
-Invite the bot with the `bot` and `applications.commands` scopes, then in each
-server:
+Invite the bot with **both** the `bot` and `applications.commands` scopes
+(`permissions=125952`). With only `applications.commands` the install reports
+success and does nothing. Then, in each server:
 
 ```
 /volk setup            # bind the channel the panel lives in
