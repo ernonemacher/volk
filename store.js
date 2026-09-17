@@ -68,7 +68,7 @@ function migrate(raw) {
     };
 }
 
-export async function readStore() {
+async function readStore() {
     if (cache) return cache;
     try {
         cache = migrate(JSON.parse(await readFile(STORE_PATH, "utf8")));
@@ -108,16 +108,6 @@ export async function saveGuild(guildId, config) {
     return config;
 }
 
-export async function forgetGuild(guildId) {
-    const store = await readStore();
-    delete store.guilds[guildId];
-    await flush();
-}
-
-/** Guild ids the bot has configured, which is not the same as those it is in. */
-export async function knownGuilds() {
-    return Object.keys((await readStore()).guilds);
-}
 
 export async function readDiscovery() {
     return (await readStore()).discovery;

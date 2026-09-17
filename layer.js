@@ -57,7 +57,7 @@ const RANDOMISED = new Set(["RAAS", "RVAAS", "RINV", "Invasion"]);
 /** Gamemodes with a fixed chain of objectives, known before the match. */
 const LINEAR = new Set(["AAS", "Seed", "Skirmish"]);
 
-export const isLinear = (gamemode) => LINEAR.has(gamemode);
+const isLinear = (gamemode) => LINEAR.has(gamemode);
 
 /** Everything else (Destruction, TC, TDM, GLOP, Training) has no lane to draw. */
 export const hasLane = (gamemode) => RANDOMISED.has(gamemode) || LINEAR.has(gamemode);
@@ -76,7 +76,7 @@ export function centreOf(entry) {
 
 
 /** The two mains, as they appear in the graph. */
-export function mainsOf(layerData) {
+function mainsOf(layerData) {
     const names = Object.keys(layerData.objectives ?? {});
     return {
         team1: names.find((n) => /team ?1/i.test(n)) ?? names.find(isMain),

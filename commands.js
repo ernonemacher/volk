@@ -15,7 +15,7 @@ import { LEVELS, grantRole, isAdmin, revokeRole, rolesFor } from "./permissions.
 import { AUTO_MAX, AUTO_MIN, fetchServerState, listServers } from "./servers.js";
 import { guildConfig, readDiscovery, saveDiscovery, saveGuild } from "./store.js";
 
-export const COMMAND = new SlashCommandBuilder()
+const COMMAND = new SlashCommandBuilder()
     .setName("volk")
     .setDescription("Administer the Volk panel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)

@@ -184,14 +184,14 @@ const esc = (s) =>
     String(s).replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]);
 
 /** Text with a dark halo, so it stays readable over any terrain. */
-function label(x, y, text, size = 15, colour = STYLE.text) {
+function label(x, y, text, size) {
     const common =
         `x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="Arial,Helvetica,sans-serif" ` +
         `font-size="${size}" font-weight="bold" text-anchor="middle"`;
     return (
         `<text ${common} fill="none" stroke="${STYLE.halo}" stroke-width="${size / 4}" ` +
         `stroke-linejoin="round" opacity="0.9">${esc(text)}</text>` +
-        `<text ${common} fill="${colour}">${esc(text)}</text>`
+        `<text ${common} fill="${STYLE.text}">${esc(text)}</text>`
     );
 }
 

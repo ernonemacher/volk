@@ -28,7 +28,7 @@ import {
 } from "./layer.js";
 import { listServers, squadcalcUrl } from "./servers.js";
 
-export const COLOUR = {
+const COLOUR = {
     live: 0x4a7534,
     paused: 0xa9731a,
     error: 0xb22222,

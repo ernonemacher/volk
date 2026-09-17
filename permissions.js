@@ -39,7 +39,7 @@ export function isAdmin(interaction, config) {
 }
 
 /** Admins operate too: a config role that cannot click the panel is a trap. */
-export function canOperate(interaction, config) {
+function canOperate(interaction, config) {
     if (isAdmin(interaction, config)) return true;
     const allowed = rolesFor(config, "operator");
     return allowed.length === 0 || hasAnyRole(interaction, allowed);

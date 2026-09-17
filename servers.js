@@ -29,7 +29,7 @@ export const MAX_OPTIONS = 25;
  * Map styles SquadCalc accepts in its `type` parameter. Anything else makes it
  * silently fall back to the basemap, so an invalid config must not reach the URL.
  */
-export const MAP_TYPES = ["basemap", "terrainmap", "topomap"];
+const MAP_TYPES = ["basemap", "terrainmap", "topomap"];
 
 /** Bounds for the automatic refresh interval, in seconds. */
 export const AUTO_MIN = 30;
