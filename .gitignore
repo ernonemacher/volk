@@ -2,5 +2,8 @@
 
 # Each submodule carries its own ignores; nothing is built at this level.
 
-# Local checkout of volk-web, until it has a remote of its own.
-web/
+# Scratch from tooling that runs inside the repo, not part of the project.
+.playwright-mcp/
+.agents/
+.claude/
+skills-lock.json

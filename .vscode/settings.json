@@ -1,0 +1,29 @@
+{
+  // O repositorio e uma casca com dois submodulos, e cada um tem o seu
+  // node_modules: 10.203 arquivos em web/, 3.356 em bot/. O git ja ignora
+  // todos, mas o editor os varre por conta propria, e e dai que vem a
+  // contagem de "10k+ arquivos" e a lentidao ao abrir a pasta.
+  "git.ignoreLimitWarning": true,
+
+  // Fora do indice de busca e do explorador.
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true
+  },
+
+  // Fora do file watcher, que e o que de fato pesa: sem isto o editor
+  // mantem um handle por arquivo observado.
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/out/**": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/package-lock.json": true
+  }
+}
