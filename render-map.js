@@ -19,9 +19,16 @@
 
 import sharp from "sharp";
 import { writeFile } from "node:fs/promises";
-import { buildFlags, centreOf, fetchLayer, isMain, laneState, makeProjector, shortName } from "./layer.js";
-
-const API_URL = process.env.SQUADCALC_API ?? "https://beta.squadcalc.app/api";
+import {
+    API_URL,
+    buildFlags,
+    centreOf,
+    fetchLayer,
+    isMain,
+    laneState,
+    makeProjector,
+    shortName,
+} from "./layer.js";
 
 /** Final image width. Everything is composed at this size, never at 4096. */
 const OUTPUT_WIDTH = 1600;

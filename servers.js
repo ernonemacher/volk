@@ -13,10 +13,14 @@
  * comes from the store, because "which servers are in a match right now" has
  * the same answer for everyone.
  */
+import { API_URL, APP_URL } from "./layer.js";
 import { readDiscovery } from "./store.js";
 
-export const API_URL = "https://squadcalc.app/api";
-export const APP_URL = "https://squadcalc.app";
+// Same backend the layers come from, deliberately. Production reports
+// `mapName: null` for modded layers, which the panel reads as "not drawable",
+// so pointing the two at different builds made every modded server look
+// unplayable while the layer endpoint had the full data.
+export { API_URL, APP_URL } from "./layer.js";
 
 /** Discord's cap on the number of options in a select menu. */
 export const MAX_OPTIONS = 25;

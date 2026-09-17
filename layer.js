@@ -14,7 +14,14 @@ import SquadLaneSolver from "./lane-solver.js";
  * the `dev` branch, so it can break without notice. Override with
  * SQUADCALC_API when that matters.
  */
-const API_URL = process.env.SQUADCALC_API ?? "https://beta.squadcalc.app/api";
+export const API_URL = process.env.SQUADCALC_API ?? "https://beta.squadcalc.app/api";
+
+/**
+ * The site matching that API, so the "Open in SquadCalc" link shows the same
+ * build the panel is drawn from. Pointing them at different ones sends people
+ * to a page that does not know the layer they are looking at.
+ */
+export const APP_URL = API_URL.replace(/\/api\/?$/, "");
 
 const cache = new Map();
 
