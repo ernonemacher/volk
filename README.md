@@ -10,6 +10,9 @@ Built on [SquadCalc](https://github.com/sh4rkman/SquadCalc) and derived from its
 code. See [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE): this project inherits
 SquadCalc's **non-commercial** terms.
 
+**[How to use Volk](docs/USAGE.md)** covers reading the panel, operating it and
+setting it up. What follows is about running the bot yourself.
+
 ## What it does
 
 Squad's RAAS, RVAAS, Invasion and RINV layers draw a random route from main to
@@ -56,34 +59,13 @@ the controls, and the map image on its own below.
 
 ## Commands
 
-All of them are usable from any channel, so admins do not have to clutter the
-panel channel.
+`/volk setup`, `config`, `roles`, `auto`, `language`, `pin`, `unpin`,
+`discovery`, `search`, `republish`. All usable from any channel, so configuring
+does not clutter the panel. [What each one does](docs/USAGE.md#setting-it-up).
 
-| Command | What it does |
-|---|---|
-| `/volk setup` | Choose the channel the panel is published in |
-| `/volk config` | Show the current settings and the server list |
-| `/volk roles` | Choose which roles configure the bot, and which operate the panel |
-| `/volk auto` | Automatic refresh, on/off and interval (30 to 3600s) |
-| `/volk language` | Panel language (de, en, fr, pt, ru, uk, zh) |
-| `/volk pin` / `unpin` | Pin a server so it is listed even while offline |
-| `/volk discovery` | Include servers currently in a match, and how many |
-| `/volk search` | Find a server id by name |
-| `/volk republish` | Post the panel again, for when it is wedged or deleted |
-
-## Permissions
-
-Two levels, because they answer different questions:
-
-| Level | Covers | Default |
-|---|---|---|
-| `admin` | Settings that outlive the match: pinned servers, interval, language, roles | Anyone with **Manage Server** |
-| `operator` | Driving the panel: pick a server, a side, an objective | **Anyone in the channel** |
-
-Operating is open on purpose. A squad calling objectives mid-match should not be
-waiting on someone with Manage Server, so the restriction only exists once an
-admin names at least one operator role with `/volk roles`. Manage Server
-always counts as admin, so a fresh install works before anything is configured.
+Access has two levels: `admin` covers settings that outlive the match and
+defaults to Manage Server, `operator` covers driving the panel and defaults to
+anyone in the channel. [Why](docs/USAGE.md#permissions).
 
 ## Configuration
 
