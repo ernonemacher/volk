@@ -91,7 +91,22 @@ const BUGGED_BORDERS = new Set([
     "GC_Ryloth_INV_V2",
 ]);
 
+/**
+ * How many decoded basemaps to keep.
+ *
+ * Each one costs tens of megabytes once libvips has it resident, and a bot that
+ * follows a rotation would otherwise accumulate every map in the game: six was
+ * enough to take the process from 60 MB to 423 MB. Insertion order is the
+ * eviction order, which is a plain LRU once a hit re-inserts.
+ */
+const BASEMAP_CACHE_SIZE = 4;
 const basemapCache = new Map();
+
+// libvips keeps its own operation cache on top of ours, unbounded enough to
+// matter on a small host. These are the numbers the bot actually needs: one
+// render at a time, no file cache, a small operation cache.
+sharp.cache({ memory: 64, files: 0, items: 32 });
+sharp.concurrency(1);
 
 /**
  * Basemap, already downscaled to the output size and cached.
@@ -101,7 +116,12 @@ const basemapCache = new Map();
  */
 async function fetchBasemap(mapId, style = "terrainmap") {
     const key = `${mapId}/${style}/${OUTPUT_WIDTH}`;
-    if (basemapCache.has(key)) return basemapCache.get(key);
+    if (basemapCache.has(key)) {
+        const hit = basemapCache.get(key);
+        basemapCache.delete(key); // re-insert so it becomes the newest
+        basemapCache.set(key, hit);
+        return hit;
+    }
 
     const url = `${API_URL}/img/maps/${mapId.toLowerCase()}/${style}.webp`;
     const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
@@ -113,6 +133,9 @@ async function fetchBasemap(mapId, style = "terrainmap") {
         .toBuffer();
 
     basemapCache.set(key, small);
+    while (basemapCache.size > BASEMAP_CACHE_SIZE) {
+        basemapCache.delete(basemapCache.keys().next().value);
+    }
     return small;
 }
 
