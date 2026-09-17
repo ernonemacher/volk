@@ -14,5 +14,6 @@ preview-*.png
 .DS_Store
 
 # Working notes, kept local: Portuguese product and planning documents
-PRODUCT.md
-BACKLOG.md
+docs/PRODUCT.md
+docs/BACKLOG.md
+docs/COMPANION.md
