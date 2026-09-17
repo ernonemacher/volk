@@ -11,7 +11,8 @@ code. See [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE): this project inherits
 SquadCalc's **non-commercial** terms.
 
 **[How to use Volk](docs/USAGE.md)** covers reading the panel, operating it and
-setting it up. What follows is about running the bot yourself.
+setting it up. **[Deploying](docs/DEPLOY.md)** covers running it on a server.
+What follows is about running it locally.
 
 ## What it does
 
