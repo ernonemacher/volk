@@ -22,7 +22,7 @@ import { AUTO_MAX, AUTO_MIN, fetchServerState, labelFor } from "./servers.js";
 import { guildConfig, saveGuild } from "./store.js";
 import { renderLayer } from "./render-map.js";
 import { translator } from "./i18n.js";
-import { canOperate } from "./permissions.js";
+import { ADMIN_CONTROLS, canUse } from "./permissions.js";
 import { registerCommands, handleCommand } from "./commands.js";
 import {
     buildComponents,
@@ -429,8 +429,11 @@ client.on("interactionCreate", async (i) => {
 
     // The slash command is gated by Discord; the panel's controls are not, so
     // this is the only place operating can be restricted to a role.
-    if (!canOperate(i, config)) {
-        return i.reply({ content: t("warn.notAllowed"), flags: MessageFlags.Ephemeral });
+    if (!canUse(i, config, i.customId)) {
+        return i.reply({
+            content: ADMIN_CONTROLS.has(i.customId) ? t("warn.adminOnly") : t("warn.notAllowed"),
+            flags: MessageFlags.Ephemeral,
+        });
     }
 
     // A render in flight owns both messages, so a click landing mid-pass would

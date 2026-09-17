@@ -46,6 +46,22 @@ export function canOperate(interaction, config) {
 }
 
 /** Adds a role to a level. Returns false when it was already there. */
+/**
+ * Panel controls reserved for admins.
+ *
+ * Discord renders one set of components for every viewer, so a control cannot
+ * be hidden from some of them. The menu is there for everyone and the click is
+ * refused, which is why the refusal has to say who may use it.
+ */
+export const ADMIN_CONTROLS = new Set(["server"]);
+
+/** Whether this member may drive a given control. */
+export function canUse(interaction, config, customId) {
+    return ADMIN_CONTROLS.has(customId)
+        ? isAdmin(interaction, config)
+        : canOperate(interaction, config);
+}
+
 export function grantRole(config, level, roleId) {
     config.roles ??= {};
     config.roles[level] ??= [];

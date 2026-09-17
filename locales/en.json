@@ -37,5 +37,6 @@
     "reason.seed": "seed layer, or one SquadCalc can't render",
     "panel.routes": "Routes left",
     "warn.notAllowed": "You do not have a role allowed to operate this panel.",
-    "warn.noPanel": "No panel in this server yet. An admin sets one up with /volk setup."
+    "warn.noPanel": "No panel in this server yet. An admin sets one up with /volk setup.",
+    "warn.adminOnly": "Only admins can change which server the panel watches."
 }

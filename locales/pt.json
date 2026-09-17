@@ -37,5 +37,6 @@
     "reason.seed": "layer de seed ou não reconhecida",
     "panel.routes": "Rotas restantes",
     "warn.notAllowed": "Voce nao tem um cargo liberado para operar este painel.",
-    "warn.noPanel": "Ainda nao ha painel neste servidor. Um admin cria com /volk setup."
+    "warn.noPanel": "Ainda nao ha painel neste servidor. Um admin cria com /volk setup.",
+    "warn.adminOnly": "So admins podem trocar o servidor que o painel acompanha."
 }

@@ -64,9 +64,10 @@ the controls, and the map image on its own below.
 `discovery`, `search`, `republish`. All usable from any channel, so configuring
 does not clutter the panel. [What each one does](docs/USAGE.md#setting-it-up).
 
-Access has two levels: `admin` covers settings that outlive the match and
-defaults to Manage Server, `operator` covers driving the panel and defaults to
-anyone in the channel. [Why](docs/USAGE.md#permissions).
+Access has two levels: `admin` covers the commands and the server selector, and
+defaults to Manage Server; `operator` covers the team and objective menus, and
+defaults to anyone in the channel. Naming an operator role makes everyone else
+read-only. [Why](docs/USAGE.md#permissions).
 
 ## Configuration
 

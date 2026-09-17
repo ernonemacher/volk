@@ -65,11 +65,12 @@ numbered in the frame.
 
 ## Operating the panel
 
-Anyone in the channel can drive it, unless an admin restricted it to a role.
+Anyone in the channel can drive it, unless an admin restricted it to a role. The
+server selector is always admin-only.
 
-**Server.** Which Squad server the panel watches. Pinned servers are marked with
-a star and stay listed even while offline; the rest are servers currently in a
-match.
+**Server.** Which Squad server the panel watches. **Admins only**, since it
+changes the panel for everyone. Pinned servers are marked with a star and stay
+listed even while offline; the rest are servers currently in a match.
 
 **Team.** Appears only for RAAS and RVAAS, and only before the first
 confirmation. Those modes are symmetric, so the numbering depends on which main
@@ -134,12 +135,18 @@ Two levels, because they answer different questions:
 
 | Level | Covers | Default |
 |---|---|---|
-| `admin` | Settings that outlive the match | Anyone with **Manage Server** |
-| `operator` | Driving the panel | **Anyone in the channel** |
+| `admin` | The `/volk` commands, **and the server selector** on the panel | Anyone with **Manage Server** |
+| `operator` | Team and objective menus, undo, reset, refresh | **Anyone in the channel** |
+| everyone else | Reading the panel | always |
 
-Operating is open on purpose: a squad calling objectives mid-match should not
-wait on someone with Manage Server. The restriction only exists once an admin
-names at least one operator role:
+Switching servers sits with the admins even though it is a panel control,
+because it is the one control that changes what everyone else is looking at
+instead of advancing the match in front of them.
+
+Operating is open by default on purpose: a squad calling objectives mid-match
+should not wait on someone with Manage Server. The restriction only starts once
+an admin names at least one operator role, which is also what turns everyone
+else into read-only:
 
 ```
 /volk roles action:allow level:operator role:@Squad Leader
@@ -149,6 +156,10 @@ names at least one operator role:
 
 Manage Server always counts as admin, so a fresh install works before anything
 is configured, and admins can always operate.
+
+Discord renders one set of controls for every viewer, so a menu cannot be hidden
+from people who may not use it. Everyone sees the same panel; a click without
+the right role is refused with a private notice that says who may use it.
 
 ---
 
