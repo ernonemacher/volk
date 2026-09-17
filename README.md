@@ -1,124 +1,53 @@
 # Volk
 
-**Live Squad objective intel in Discord.**
+Live Squad intel, built on public data. Volk is the umbrella; each part is its
+own repository, pulled in here as a submodule.
 
-A bot that keeps a [Squad](https://joinsquad.com) map panel in a channel: the
-layer a server is playing, which objectives are still possible, and how likely
-each one is.
-
-Built on [SquadCalc](https://github.com/sh4rkman/SquadCalc) and derived from its
-code. See [NOTICE.md](docs/NOTICE.md) and [LICENSE](LICENSE): this project inherits
-SquadCalc's **non-commercial** terms.
-
-**[How to use Volk](docs/USAGE.md)** covers reading the panel, operating it and
-setting it up. **[Deploying](docs/DEPLOY.md)** covers running it on a server.
-What follows is about running it locally.
-
-## What it does
-
-Squad's RAAS, RVAAS, Invasion and RINV layers draw a random route from main to
-main at match start. Nothing public reports which one was drawn, so the bot does
-what a player does: as objectives are confirmed, it eliminates the routes that
-cannot carry them.
-
-- **Every point carries its odds**, not just the next one. A layer with five
-  possible routes shows each objective's probability at each depth.
-- **Confirmations are unordered.** Learning a flag at depth 6 is worth as much
-  as learning the first one. On Manicouagan, confirming a single mid-match
-  objective cuts five routes to one and resolves the rest of the match.
-- **Forced steps resolve themselves.** When only one point can fill the next
-  depth, the bot walks it, cascading.
-- Linear modes (AAS, Seed, Skirmish) show their fixed chain; modes with no lane
-  are drawn as they are.
-
-The map is composed server-side with [sharp](https://sharp.pixelplumbing.com):
-a cached basemap plus a hand-built SVG overlay. No browser is involved, which is
-what keeps a render around half a second and the memory footprint small enough
-for free hosting.
-
-## Running it
-
-```bash
-npm install
-cp .env.example .env     # add your bot token
-npm start
-```
-
-On a Mac, double-click **`Volk.command`** instead: it starts the bot under a
-supervisor and opens a local page to watch the log, see which channel each guild
-publishes to, and stop or restart it. Closing its window stops the bot, which is
-the difference between it and `npm start` in a terminal that later gets closed:
-that leaves an orphan holding the gateway with its logs going nowhere.
-
-Invite the bot with **both** the `bot` and `applications.commands` scopes
-(`permissions=125952`). With only `applications.commands` the install reports
-success and does nothing. Then, in each server:
-
-```
-/volk setup            # bind the channel the panel lives in
-```
-
-The panel channel needs View Channel, Send Messages, Embed Links, Attach Files,
-Read Message History and Manage Messages. Setup refuses a channel missing any of
-them rather than saving one it cannot publish to.
-
-The panel publishes two messages and edits them in place: the text panel with
-the controls, and the map image on its own below.
-
-## Commands
-
-`/volk setup`, `config`, `roles`, `auto`, `language`, `pin`, `unpin`,
-`discovery`, `search`, `republish`. All usable from any channel, so configuring
-does not clutter the panel. [What each one does](docs/USAGE.md#setting-it-up).
-
-Access has two levels: `admin` covers settings that outlive the match and
-defaults to Manage Server, `operator` covers driving the panel and defaults to
-anyone in the channel. [Why](docs/USAGE.md#permissions).
-
-## Configuration
-
-Environment (see `.env.example`): `DISCORD_TOKEN` is the only required value.
-`SQUADCALC_STORE` points persisted state somewhere other than `./config.json`,
-which matters on a host with an ephemeral disk. `SQUADCALC_API` picks the
-SquadCalc backend, defaulting to the beta build because it carries the modded
-layers.
-
-Everything else is per guild and lives in the store: panel channel, watched
-server, pinned servers, language, refresh interval and roles. Discovery settings
-are global, since "which servers are in a match right now" has one answer.
-
-## Layout
-
-| File | Role |
+| Part | What it does |
 |---|---|
-| `src/bot.js` | Discord client, one panel per guild, render queue, auto refresh |
-| `src/panel.js` | Panel state and the embed and components it publishes |
-| `src/layer.js` | Layer data, flag construction, lane state |
-| `src/lane-solver.js` | Route enumeration and probabilities (copied from SquadCalc) |
-| `src/render-map.js` | SVG-over-basemap composition |
-| `src/store.js` | Persisted per-guild state |
-| `src/permissions.js` | The two access levels |
-| `src/commands.js` | Slash commands |
-| `src/i18n.js`, `locales/` | Seven languages, with domain terms shared with SquadCalc |
-| `docs/` | Usage, deployment, third-party notices and working notes |
-| `tools/` | Asset generation and a Windows log diagnostic |
-| `experiments/` | Abandoned approaches, kept for the record |
+| [`bot/`](https://github.com/ernonemacher/volk-bot) | Discord bot publishing a live match map, with the lane walked by hand |
+| `web/` | Uniform and vehicle catalogues, for what the map cannot answer |
 
-Render a map without Discord:
+`web/` is not published yet: its submodule points at a local checkout, so a
+clone on another machine will fail to fetch it until it has a remote.
+
+Both run off public sources: the [SquadCalc](https://github.com/sh4rkman/SquadCalc)
+API for layers and servers, snapshots of community catalogues for the rest. See
+each part's own README, and the licence it inherits.
+
+## Working on it
+
+Clone with the parts, not just the shell:
 
 ```bash
-node src/render-map.js Manicouagan_RAAS_v1
-node src/render-map.js Manicouagan_RAAS_v1 "Logistics Center" --team1=PLA --team2=USA
-node src/render-map.js Yehorivka_RAAS_v2 --team2
+git clone --recurse-submodules git@github.com:ernonemacher/volk.git
 ```
 
-## Limits
+A plain `git clone` leaves `bot/` and `web/` empty. If that happens:
 
-Public data carries the layer, the next layer, factions, player counts and
-playtime. It does **not** carry ticket counts, captured objectives or player
-positions, and no public source does: SquadStats and MySquadStats are SquadJS
-plugins a server admin installs. That is why objectives are confirmed by hand.
+```bash
+git submodule update --init --recursive
+```
 
-Upstream freshness varies by server, measured at roughly 30 seconds for actively
-polled ones and much worse for quiet ones, which is what the default 60 second
-refresh is sized against.
+Each submodule is an ordinary repository: `cd bot`, branch, commit and push as
+usual. The catch is that this repository records **which commit** of each part
+it points at, so publishing a change is two steps:
+
+```bash
+cd bot && git commit && git push      # the change itself
+cd .. && git add bot && git commit    # move the pointer here
+```
+
+Skip the second and this repository still points at the old commit, which is the
+usual way a submodule setup confuses people. To pull everyone else's work:
+
+```bash
+git pull --recurse-submodules
+```
+
+## Why separate repositories
+
+The bot and the web face answer the same question from different angles, and
+began in one repository. They are split because they have different lifecycles:
+the bot is a long-running service with a deployment and a Discord token, the web
+face is a static catalogue that gets rebuilt when a game version lands.
