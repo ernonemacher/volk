@@ -6,10 +6,11 @@ own repository, pulled in here as a submodule.
 | Part | What it does |
 |---|---|
 | [`bot/`](https://github.com/ernonemacher/volk-bot) | Discord bot publishing a live match map, with the lane walked by hand |
-| `web/` | Uniform and vehicle catalogues, for what the map cannot answer |
+| `web/` | Uniform and vehicle catalogues, for what the map cannot answer — not published yet |
 
-`web/` is not published yet: its submodule points at a local checkout, so a
-clone on another machine will fail to fetch it until it has a remote.
+Only `bot/` is wired up as a submodule. `volk-web` exists as a repository but has
+no remote yet, and a submodule pointing at a local path makes `git clone` fail
+outright for everyone else, so it joins here once it is published.
 
 Both run off public sources: the [SquadCalc](https://github.com/sh4rkman/SquadCalc)
 API for layers and servers, snapshots of community catalogues for the rest. See

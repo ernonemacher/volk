@@ -1,3 +1,6 @@
 .DS_Store
 
 # Each submodule carries its own ignores; nothing is built at this level.
+
+# Local checkout of volk-web, until it has a remote of its own.
+web/

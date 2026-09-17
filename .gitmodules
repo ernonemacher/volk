@@ -1,6 +1,3 @@
 [submodule "bot"]
 	path = bot
 	url = https://github.com/ernonemacher/volk-bot.git
-[submodule "web"]
-	path = web
-	url = /Users/ernonemacher/developer/volk-web
