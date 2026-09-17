@@ -47,7 +47,7 @@ const COMMAND = new SlashCommandBuilder()
             .addStringOption((o) =>
                 o
                     .setName("level")
-                    .setDescription("admin configures and switches servers, operator confirms objectives")
+                    .setDescription("admin configures the bot, operator only drives the panel")
                     .addChoices(
                         { name: "admin", value: "admin" },
                         { name: "operator", value: "operator" },
@@ -230,10 +230,7 @@ export async function handleCommand(i, repaint) {
                 const names = rolesFor(cfg, lvl)
                     .map((id) => `<@&${id}>`)
                     .join(", ");
-                const label =
-                    lvl === "admin"
-                        ? "Configure the bot, and change the watched server"
-                        : "Pick a side and confirm objectives";
+                const label = lvl === "admin" ? "Configure the bot" : "Operate the panel";
                 const fallback =
                     lvl === "admin" ? "only Manage Server" : "any member of the channel";
                 return `**${label}:** ${names || `_${fallback}_`}`;

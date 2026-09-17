@@ -22,7 +22,7 @@ import { AUTO_MAX, AUTO_MIN, fetchServerState, labelFor } from "./servers.js";
 import { guildConfig, saveGuild } from "./store.js";
 import { renderLayer } from "./render-map.js";
 import { translator } from "./i18n.js";
-import { ADMIN_CONTROLS, canUse } from "./permissions.js";
+import { canOperate } from "./permissions.js";
 import { registerCommands, handleCommand } from "./commands.js";
 import {
     buildComponents,
@@ -83,6 +83,10 @@ async function refresh(panel) {
         const status = await fetchServerState(panel.serverId);
         const label = await labelFor(panel.serverId, config);
 
+        // Before the offline branch too: it publishes the same two messages, so
+        // a deletion left unnoticed there inverts the panel just the same.
+        await reconcileMessages(panel, channel);
+
         if (!status.playable) {
             const reasonKey = status.found ? "reason.seed" : "reason.offline";
             // Controls stay on a dead panel on purpose: a server that went
@@ -96,8 +100,6 @@ async function refresh(panel) {
             await publishMap(panel, channel, null, `_${t(reasonKey)}_`);
             return;
         }
-
-        await reconcileMessages(panel, channel);
 
         const layerChanged = syncLayer(panel, status.layer);
         const state = await currentState(panel);
@@ -248,7 +250,10 @@ async function adoptMessages(panel, channel) {
         .sort((a, b) => b.createdTimestamp - a.createdTimestamp);
 
     const text = mine.find((m) => m.embeds.length > 0);
-    const map = mine.find((m) => m.embeds.length === 0 && m.attachments.size > 0);
+    // Not `attachments.size > 0`: offline the map message carries the reason as
+    // plain text and no file at all, so requiring an attachment orphaned it,
+    // deleted it as a leftover, and let the next refresh post a third message.
+    const map = mine.find((m) => m.embeds.length === 0);
     panel.textMessageId = text?.id ?? null;
     panel.mapMessageId = map?.id ?? null;
 
@@ -429,11 +434,8 @@ client.on("interactionCreate", async (i) => {
 
     // The slash command is gated by Discord; the panel's controls are not, so
     // this is the only place operating can be restricted to a role.
-    if (!canUse(i, config, i.customId)) {
-        return i.reply({
-            content: ADMIN_CONTROLS.has(i.customId) ? t("warn.adminOnly") : t("warn.notAllowed"),
-            flags: MessageFlags.Ephemeral,
-        });
+    if (!canOperate(i, config)) {
+        return i.reply({ content: t("warn.notAllowed"), flags: MessageFlags.Ephemeral });
     }
 
     // A render in flight owns both messages, so a click landing mid-pass would

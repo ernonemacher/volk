@@ -24,6 +24,5 @@
     "reason.seed": "layer de seed, ou non reconnue par SquadCalc",
     "panel.routes": "Routes restantes",
     "warn.notAllowed": "Vous n'avez pas de rôle autorisé à utiliser ce panneau.",
-    "warn.noPanel": "Aucun panneau sur ce serveur. Un admin le crée avec /volk setup.",
-    "warn.adminOnly": "Seuls les admins peuvent changer le serveur suivi par le panneau."
+    "warn.noPanel": "Aucun panneau sur ce serveur. Un admin le crée avec /volk setup."
 }

@@ -7,7 +7,7 @@ layer a server is playing, which objectives are still possible, and how likely
 each one is.
 
 Built on [SquadCalc](https://github.com/sh4rkman/SquadCalc) and derived from its
-code. See [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE): this project inherits
+code. See [NOTICE.md](docs/NOTICE.md) and [LICENSE](LICENSE): this project inherits
 SquadCalc's **non-commercial** terms.
 
 **[How to use Volk](docs/USAGE.md)** covers reading the panel, operating it and
@@ -65,10 +65,9 @@ the controls, and the map image on its own below.
 `discovery`, `search`, `republish`. All usable from any channel, so configuring
 does not clutter the panel. [What each one does](docs/USAGE.md#setting-it-up).
 
-Access has two levels: `admin` covers the commands and the server selector, and
-defaults to Manage Server; `operator` covers the team and objective menus, and
-defaults to anyone in the channel. Naming an operator role makes everyone else
-read-only. [Why](docs/USAGE.md#permissions).
+Access has two levels: `admin` covers settings that outlive the match and
+defaults to Manage Server, `operator` covers driving the panel and defaults to
+anyone in the channel. [Why](docs/USAGE.md#permissions).
 
 ## Configuration
 
@@ -86,24 +85,25 @@ are global, since "which servers are in a match right now" has one answer.
 
 | File | Role |
 |---|---|
-| `bot.js` | Discord client, one panel per guild, render queue, auto refresh |
-| `panel.js` | Panel state and the embed and components it publishes |
-| `layer.js` | Layer data, flag construction, lane state |
-| `lane-solver.js` | Route enumeration and probabilities (copied from SquadCalc) |
-| `render-map.js` | SVG-over-basemap composition |
-| `store.js` | Persisted per-guild state |
-| `permissions.js` | The two access levels |
-| `commands.js` | Slash commands |
-| `i18n.js`, `locales/` | Seven languages, with domain terms shared with SquadCalc |
+| `src/bot.js` | Discord client, one panel per guild, render queue, auto refresh |
+| `src/panel.js` | Panel state and the embed and components it publishes |
+| `src/layer.js` | Layer data, flag construction, lane state |
+| `src/lane-solver.js` | Route enumeration and probabilities (copied from SquadCalc) |
+| `src/render-map.js` | SVG-over-basemap composition |
+| `src/store.js` | Persisted per-guild state |
+| `src/permissions.js` | The two access levels |
+| `src/commands.js` | Slash commands |
+| `src/i18n.js`, `locales/` | Seven languages, with domain terms shared with SquadCalc |
+| `docs/` | Usage, deployment, third-party notices and working notes |
 | `tools/` | Asset generation and a Windows log diagnostic |
 | `experiments/` | Abandoned approaches, kept for the record |
 
 Render a map without Discord:
 
 ```bash
-node render-map.js Manicouagan_RAAS_v1
-node render-map.js Manicouagan_RAAS_v1 "Logistics Center" --team1=PLA --team2=USA
-node render-map.js Yehorivka_RAAS_v2 --team2
+node src/render-map.js Manicouagan_RAAS_v1
+node src/render-map.js Manicouagan_RAAS_v1 "Logistics Center" --team1=PLA --team2=USA
+node src/render-map.js Yehorivka_RAAS_v2 --team2
 ```
 
 ## Limits

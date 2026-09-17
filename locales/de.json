@@ -24,6 +24,5 @@
     "reason.seed": "Seed-Layer, oder von SquadCalc nicht darstellbar",
     "panel.routes": "Verbleibende Routen",
     "warn.notAllowed": "Dir fehlt eine Rolle, die dieses Panel bedienen darf.",
-    "warn.noPanel": "Noch kein Panel auf diesem Server. Ein Admin richtet es mit /volk setup ein.",
-    "warn.adminOnly": "Nur Admins können den beobachteten Server wechseln."
+    "warn.noPanel": "Noch kein Panel auf diesem Server. Ein Admin richtet es mit /volk setup ein."
 }
